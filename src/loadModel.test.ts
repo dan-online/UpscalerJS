@@ -3,9 +3,9 @@ import loadModel, {
   getModelDefinition,
 } from './loadModel';
 import * as models from './models';
-import * as tf from '@tensorflow/tfjs';
+import * as tf from '@tensorflow/tfjs-node-gpu';
 jest.mock('./models');
-jest.mock('@tensorflow/tfjs');
+jest.mock('@tensorflow/tfjs-node-gpu');
 
 const mockModels = (obj: { [index: string]: any }) =>
   Object.entries(obj).forEach(([key, val]) => ((models as any)[key] = val));

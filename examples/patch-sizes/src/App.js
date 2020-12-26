@@ -1,4 +1,4 @@
-import * as tf from '@tensorflow/tfjs';
+import * as tf from '@tensorflow/tfjs-node-gpu';
 import './App.css';
 import Upscaler from 'upscaler';
 import { getTensorDimensions, getRowsAndColumns } from 'upscaler/dist/upscale';
@@ -11,7 +11,7 @@ const size = 100;
 const src = `https://picsum.photos/${size}/${size}`;
 
 const upscaler = new Upscaler({
-  model: "div2k/rdn-C3-D10-G64-G064-x2"
+  model: 'div2k/rdn-C3-D10-G64-G064-x2',
 });
 const scale = 2;
 function App() {
@@ -34,7 +34,7 @@ function App() {
   const upscale = async (e) => {
     e.preventDefault();
     setUpscaling(true);
-    const pixels = tf.browser.fromPixels(img);
+    const pixels = tf.node.fromPixels(img);
     const { rows, columns } = getRowsAndColumns(pixels, state.patchSize);
     const [height, width] = pixels.shape;
     for (let row = 0; row < rows; row++) {
@@ -59,7 +59,7 @@ function App() {
         });
         console.timeEnd('upscale');
         await tf.nextFrame();
-        
+
         slicedPixels.dispose();
         const slicedPrediction = prediction.slice(
           [sliceOrigin[0] * scale, sliceOrigin[1] * scale],
@@ -72,29 +72,35 @@ function App() {
         const src = await tensorAsBase64(slicedPrediction);
         slicedPrediction.dispose();
 
-        setUpscaledImageSources(prev => ({
+        setUpscaledImageSources((prev) => ({
           ...prev,
           [row]: {
             ...prev[row],
             [col]: src,
-          }
+          },
         }));
       }
     }
     setUpscaling(false);
   };
 
-  const handleChange = (key) => value => setState(prev => ({
-    ...prev,
-    [key]: value,
-  }));
+  const handleChange = (key) => (value) =>
+    setState((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
 
   if (img) {
     return (
       <div id="image-container">
         <div>
-          <span>(Actual image is {size}x{size})</span><br />
-          <a href={src} target="_blank" rel="noopener noreferrer"><img alt="Original" src={src} height={100} /></a>
+          <span>
+            (Actual image is {size}x{size})
+          </span>
+          <br />
+          <a href={src} target="_blank" rel="noopener noreferrer">
+            <img alt="Original" src={src} height={100} />
+          </a>
         </div>
         <div id="inputs">
           <div className="input">
@@ -127,31 +133,40 @@ function App() {
               onChange={handleChange('space')}
             />
           </div>
-          <button id="upscale" onClick={upscale}>Upscale</button>
+          <button id="upscale" onClick={upscale}>
+            Upscale
+          </button>
         </div>
         <div>
           <table id="upscaled-image">
             <tbody>
-              {Object.keys(upscaledImageSources).sort().map(rowKey => {
-                const row = upscaledImageSources[rowKey]
-                return (
-                  <tr key={rowKey}>
-                    {Object.keys(row).sort().map(colKey => {
-                      const src = row[colKey];
-                      return (
-                        <td
-                          key={colKey}
-                          style={{
-                            padding: state.space,
-                          }}
-                        >
-                          <img src={src} alt={`Patch ${rowKey}-${colKey}`} />
-                        </td>
-                      );
-                    })}
-                  </tr>
-                );
-              })}
+              {Object.keys(upscaledImageSources)
+                .sort()
+                .map((rowKey) => {
+                  const row = upscaledImageSources[rowKey];
+                  return (
+                    <tr key={rowKey}>
+                      {Object.keys(row)
+                        .sort()
+                        .map((colKey) => {
+                          const src = row[colKey];
+                          return (
+                            <td
+                              key={colKey}
+                              style={{
+                                padding: state.space,
+                              }}
+                            >
+                              <img
+                                src={src}
+                                alt={`Patch ${rowKey}-${colKey}`}
+                              />
+                            </td>
+                          );
+                        })}
+                    </tr>
+                  );
+                })}
             </tbody>
           </table>
         </div>
@@ -166,7 +181,10 @@ export default () => {
   return (
     <div className="app">
       <h1>Patch Sizes</h1>
-      <p>For larger images, we can use patch sizes as a way to provide a more performant UI.</p>
+      <p>
+        For larger images, we can use patch sizes as a way to provide a more
+        performant UI.
+      </p>
       <App />
     </div>
   );

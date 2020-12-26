@@ -1,6 +1,5 @@
 {
   "name": "upscaler",
-  "version": "/mnt/Castellan/code/upscalerjs/scripts/bump_version.js",
   "description": "Increase image resolution with a Neural Network",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -31,7 +30,8 @@
     "watch": "rimraf dist && tsc --watch --skipLibCheck",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "tslint -p tsconfig.json",
-    "test": "jest --config jestconfig.json"
+    "test": "jest --config jestconfig.json",
+    "v": "node --version"
   },
   "repository": {
     "type": "git",
@@ -47,7 +47,7 @@
     "@tensorflow/tfjs": "2.1.0"
   },
   "devDependencies": {
-    "@tensorflow/tfjs": "2.1.0",
+    "@tensorflow/tfjs": "^2.7.0",
     "@types/jest": "^26.0.7",
     "codecov": "^3.7.2",
     "docsify-cli": "^4.4.1",
@@ -61,7 +61,11 @@
     "typescript": "^3.9.7"
   },
   "dependencies": {
+    "@tensorflow/tfjs-node": "^2.7.0",
+    "@tensorflow/tfjs-node-gpu": "^2.7.0",
+    "canvas": "^2.6.1",
     "dot-prop": "^5.1.1",
+    "path": "^0.12.7",
     "tensor-as-base64": "^0.1.1"
   }
 }

@@ -1,4 +1,4 @@
-import * as tf from '@tensorflow/tfjs';
+import * as tf from '@tensorflow/tfjs-node-gpu';
 import Upscaler from 'upscaler';
 import img from './flower-256.png';
 import { writeOutput, disable } from './ui';
@@ -14,26 +14,28 @@ buttonWithWW.onclick = async () => {
   image.src = img;
   image.crossOrigin = 'anonymous';
   image.onload = async () => {
-    const pixels = tf.browser.fromPixels(image);
+    const pixels = tf.node.fromPixels(image);
     await tf.nextFrame();
     const data = await pixels.data();
     worker.postMessage([data, pixels.shape]);
   };
 };
 worker.onmessage = async (e) => {
-  const [ data, shape ] = e.data;
+  const [data, shape] = e.data;
   const tensor = tf.tensor(data, shape);
   const src = await tensorAsBase64(tensor);
   writeOutput(src);
-}
+};
 
 buttonWithoutWW.onclick = async () => {
   const upscaler = new Upscaler({
     model: 'div2k/rdn-C3-D10-G64-G064-x2',
   });
   await disable();
-  upscaler.upscale(img, {
-    patchSize: 64,
-    padding: 4,
-  }).then(writeOutput);
+  upscaler
+    .upscale(img, {
+      patchSize: 64,
+      padding: 4,
+    })
+    .then(writeOutput);
 };

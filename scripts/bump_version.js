@@ -10,7 +10,7 @@ const updatePackageJSON = (packagePath, version, callback) => {
     callback(package);
   }
   fs.writeFileSync(packagePath, JSON.stringify(package, null, 2));
-}
+};
 
 updatePackageJSON(path.resolve(ROOT, 'package.json'), version);
 
@@ -24,17 +24,17 @@ updatePackageJSON(path.resolve(ROOT, 'package.json'), version);
 // `);
 
 const examplesPath = path.resolve(ROOT, 'examples');
-const examples = fs.readdirSync(examplesPath)
-examples.forEach(example => {
+const examples = fs.readdirSync(examplesPath);
+examples.forEach((example) => {
   const dirPath = path.resolve(examplesPath, example);
   if (fs.lstatSync(dirPath).isDirectory()) {
     const examplePackagePath = path.resolve(dirPath, 'package.json');
-    updatePackageJSON(examplePackagePath, version, package => {
+    updatePackageJSON(examplePackagePath, version, (package) => {
       if (!package.dependencies) {
         package.dependencies = {};
       }
       package.dependencies.upscaler = version;
-      package.dependencies['@tensorflow/tfjs'] = '2.1.0';
+      package.dependencies['@tensorflow/tfjs-node-gpu'] = '2.1.0';
     });
   }
 });

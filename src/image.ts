@@ -1,33 +1,42 @@
-import * as tf from '@tensorflow/tfjs';
-import { isHTMLImageElement, isString, isFourDimensionalTensor } from './utils';
-
-export const loadImage = (src: string): Promise<HTMLImageElement> =>
+import * as tf from '@tensorflow/tfjs-node-gpu';
+import { Image, createCanvas, loadImage as LI } from 'canvas';
+import { isString, isFourDimensionalTensor } from './utils';
+import path from 'path';
+import fs from 'fs';
+export const loadImage = (src: string): Promise<any> =>
   new Promise((resolve, reject) => {
-    const img = new Image();
-    img.src = src;
-    img.crossOrigin = 'anonymous';
-    img.onload = () => resolve(img);
-    img.onerror = reject;
+    fs.readFile(src, (err, file) => {
+      if (file) resolve(file);
+      else reject(err);
+    });
+    // LI(src)
+    //   .then((img) => {
+    //     img.
+    //     console.log(img);
+    //     const canvas = createCanvas(img.width, img.height);
+    //     const ctx = canvas.getContext('2d');
+    //     console.log(canvas);
+    //     ctx.drawImage(img, 0, 0);
+    //     console.log(ctx);
+    //     let data = ctx.getImageData(0, 0, img.width, img.height);
+    //     resolve(new Uint8Array(data.data.buffer));
+    //   })
+    //   .catch(reject);
   });
 
 export const getImageAsPixels = async (
-  pixels: string | HTMLImageElement | tf.Tensor,
+  pixels: string | tf.Tensor,
 ): Promise<{
   tensor: tf.Tensor4D;
   type: 'string' | 'HTMLImageElement' | 'tensor';
 }> => {
+  console.log(pixels);
   if (isString(pixels)) {
     const img = await loadImage(pixels);
+    console.log('IMG', img);
     return {
-      tensor: tf.browser.fromPixels(img).expandDims(0) as tf.Tensor4D,
+      tensor: tf.node.decodeImage(img).expandDims(0) as tf.Tensor4D,
       type: 'string',
-    };
-  }
-
-  if (isHTMLImageElement(pixels)) {
-    return {
-      tensor: tf.browser.fromPixels(pixels).expandDims(0) as tf.Tensor4D,
-      type: 'HTMLImageElement',
     };
   }
 

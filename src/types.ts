@@ -1,4 +1,4 @@
-import * as tf from '@tensorflow/tfjs';
+import * as tf from '@tensorflow/tfjs-node-gpu';
 import { SerializableConstructor } from '@tensorflow/tfjs-core/dist/serialization';
 
 export type WarmupSizesByPatchSize = {

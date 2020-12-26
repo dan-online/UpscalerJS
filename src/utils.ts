@@ -1,4 +1,4 @@
-import * as tf from '@tensorflow/tfjs';
+import * as tf from '@tensorflow/tfjs-node-gpu';
 
 export const isString = (pixels: any): pixels is string => {
   return typeof pixels === 'string';

@@ -1,4 +1,4 @@
-import * as tf from '@tensorflow/tfjs';
+import * as tf from '@tensorflow/tfjs-node-gpu';
 import { IUpscaleOptions, IModelDefinition } from './types';
 import { getImageAsPixels } from './image';
 import tensorAsBase64 from 'tensor-as-base64';
@@ -259,7 +259,7 @@ export const predict = async (
 
 const upscale = async (
   model: tf.LayersModel,
-  image: string | HTMLImageElement | tf.Tensor3D,
+  image: string | tf.Tensor3D,
   modelDefinition: IModelDefinition,
   options: IUpscaleOptions = {},
 ) => {
@@ -295,7 +295,8 @@ const upscale = async (
     return postprocessedPixels as tf.Tensor;
   }
 
-  const base64Src = tensorAsBase64(postprocessedPixels);
+  // const base64Src = tensorAsBase64(postprocessedPixels);
+  const base64Src = tf.node.encodePng(postprocessedPixels);
   postprocessedPixels.dispose();
   return base64Src;
 };

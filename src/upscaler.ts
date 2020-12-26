@@ -1,4 +1,4 @@
-import * as tf from '@tensorflow/tfjs';
+import * as tf from '@tensorflow/tfjs-node-gpu';
 import {
   IUpscalerOptions,
   IUpscaleOptions,
@@ -30,7 +30,7 @@ class Upscaler {
   };
 
   upscale = async (
-    image: string | HTMLImageElement | tf.Tensor3D,
+    image: string | tf.Tensor3D,
     options: IUpscaleOptions = {},
   ) => {
     const { model, modelDefinition } = await this._model;

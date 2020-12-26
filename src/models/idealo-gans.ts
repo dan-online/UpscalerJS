@@ -1,4 +1,4 @@
-import * as tf from '@tensorflow/tfjs';
+import * as tf from '@tensorflow/tfjs-node-gpu';
 import { IIntermediaryModelDefinition } from '../types';
 
 const SCALE = 4;
