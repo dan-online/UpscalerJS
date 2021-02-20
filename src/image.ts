@@ -30,12 +30,11 @@ export const getImageAsPixels = async (
   tensor: tf.Tensor4D;
   type: 'string' | 'HTMLImageElement' | 'tensor';
 }> => {
-  console.log(pixels);
   if (isString(pixels)) {
     const img = await loadImage(pixels);
-    console.log('IMG', img);
+    let tensor = tf.node.decodeImage(img).expandDims(0) as tf.Tensor4D;
     return {
-      tensor: tf.node.decodeImage(img).expandDims(0) as tf.Tensor4D,
+      tensor: tensor,
       type: 'string',
     };
   }

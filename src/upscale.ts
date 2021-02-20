@@ -203,11 +203,14 @@ export const predict = async (
           height,
           width,
         );
+        console.log(pixels.shape);
         const slicedPixels = pixels.slice(
           [0, origin[0], origin[1]],
           [-1, size[0], size[1]],
         );
+        console.log(slicedPixels.shape);
         await tf.nextFrame();
+        console.log(slicedPixels);
         const prediction = model.predict(slicedPixels) as tf.Tensor4D;
         await tf.nextFrame();
         slicedPixels.dispose();
@@ -249,6 +252,11 @@ export const predict = async (
   }
 
   return tf.tidy(() => {
+    const newShape = pixels.shape;
+
+    pixels.shape.pop();
+    pixels.shape.push(3);
+    // pixels = pixels.reshape(newShape);
     const pred = model.predict(pixels) as tf.Tensor4D;
     if (progress) {
       progress(1);
